@@ -1,4 +1,4 @@
-# dbt-medallion-ecommerce
+# dbt-medallion-ecommerce-analytics
 
 This project implements the **Medallion Architecture** (Bronze → Silver → Gold) in **dbt + Databricks**, using an e-commerce dataset (Orders, Users, Products, Reviews).  
 
@@ -35,7 +35,7 @@ The goal is to demonstrate how raw data flows through transformation layers to p
 ## 🚀 How to Run
 1. Clone this repo:
    ```bash
-   git clone https://github.com/<your-username>/dbt-medallion-ecommerce.git
+   git clone https://github.com/<your-username>/dbt-medallion-ecommerce-analytics.git
    cd dbt-medallion-ecommerce
 dbt deps
 dbt run --select bronze
@@ -47,3 +47,5 @@ dbt test
  Outputs
 	•	Daily Sales Fact Table (gold_sales_daily)
 	•	Average Ratings Aggregation (gold_avg_rating_daily)
+
+ Author: Patrick Okare
