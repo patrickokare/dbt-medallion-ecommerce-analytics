@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: landing
+    database: dbt_project_catalog
+    schema: landing
+    tables:
+      
+      - name: orders
+        tests:
+         - dbt_utils.expression_is_true:
+            expression: "quantity >=0 and unit_price >=0"
+        columns:
+          - name: id
+            tests:
+              - unique:
+                  config:
+                    severity: warn
+              - not_null:
+                  config:
+                    severity: warn
+          - name: quantity
+            tests:
+              - dbt_utils.expression_is_true:
+                 expression: ">=0"
+          - name: unit_price
+            tests:
+              - dbt_utils.expression_is_true:
+                 expression: ">=0"
+
+      - name: products
+        columns:
+          - name: id
+            tests:
+              - unique:
+                  config:
+                    severity: warn
+              - not_null:
+                  config:
+                    severity: warn
+      - name: reviews
+        columns:
+          - name: id
+            tests:
+              - unique:
+                  config:
+                    severity: warn
+              - not_null:
+                  config:
+                    severity: warn
+      - name: users
+        columns:
+          - name: id
+            tests:
+              - unique:
+                  config:
+                    severity: warn
+              - not_null:
+                  config:
+                    severity: warn
+ 
