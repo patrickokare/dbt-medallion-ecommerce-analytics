@@ -1,15 +1,51 @@
-Welcome to your new dbt project!
+# dbt-medallion-ecommerce-analytics
 
-### Using the starter project
+This project implements the **Medallion Architecture** (Bronze → Silver → Gold) in **dbt + Databricks**, using an e-commerce dataset (Orders, Users, Products, Reviews).  
 
-Try running the following commands:
-- dbt run
-- dbt test
+The goal is to demonstrate how raw data flows through transformation layers to produce clean, analytics-ready tables.
 
+---
 
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [dbt community](https://getdbt.com/community) to learn from other analytics engineers
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+## 📂 Project Structure
+
+- **Bronze Layer (Raw Ingest)**
+  - `bronze_orders`
+  - `bronze_users`
+  - `bronze_products`
+  - `bronze_reviews`
+
+- **Silver Layer (Clean & Conformed)**
+  - `silver_orders`
+  - `silver_products`
+  - `silver_users`
+
+- **Gold Layer (Aggregations & BI-Ready)**
+  - `gold_sales_daily`
+  - `gold_avg_rating_daily`
+
+---
+
+## ⚙️ Tech Stack
+- [dbt](https://docs.getdbt.com/) for data modeling & transformations
+- [Databricks](https://www.databricks.com/) for storage, compute, and orchestration
+- **Delta Lake** format for reliability and performance
+
+---
+
+## 🚀 How to Run
+1. Clone this repo:
+   ```bash
+   git clone https://github.com/<your-username>/dbt-medallion-ecommerce-analytics.git
+   cd dbt-medallion-ecommerce
+dbt deps
+dbt run --select bronze
+dbt run --select silver
+dbt run --select gold
+
+dbt test
+
+ Outputs
+	•	Daily Sales Fact Table (gold_sales_daily)
+	•	Average Ratings Aggregation (gold_avg_rating_daily)
+
+ Author: Patrick Okare
