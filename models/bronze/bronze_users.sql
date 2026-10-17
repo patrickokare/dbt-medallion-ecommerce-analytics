@@ -1,11 +1,6 @@
-{{
-    config(
-        tags ='contains_pii'
-    )
-}}
+{{ config(tags=['contains_pii']) }}
 
-
-SELECT
-*
-FROM
-{{source('landing','users')}}
+select
+    *,
+    current_timestamp as _loaded_at
+from {{ source('landing', 'users') }}

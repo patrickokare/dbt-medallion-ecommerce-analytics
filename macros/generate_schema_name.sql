@@ -1,14 +1,11 @@
+{#
+    Use the layer name as the schema (bronze / silver / gold) instead of dbt's
+    default "<target_schema>_<layer>". Models without a custom schema go to the target schema.
+#}
 {% macro generate_schema_name(custom_schema_name, node) -%}
-
-    {%- set default_schema = target.schema -%}
     {%- if custom_schema_name is none -%}
-
-        {{ default_schema }}
-
+        {{ target.schema }}
     {%- else -%}
-
         {{ custom_schema_name | trim }}
-
     {%- endif -%}
-
 {%- endmacro %}

@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  dbt-build:
+    name: dbt build on sample data (DuckDB)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dbt
+        run: pip install -r requirements-ci.txt
+
+      - name: Install packages
+        run: dbt deps
+
+      - name: Check the project also parses for Databricks
+        run: dbt parse --target dev
+        env:
+          DATABRICKS_HOST: ci.cloud.databricks.com
+
+      - name: Build models, snapshots, seeds and run all tests
+        run: dbt build --target ci
+
+      - name: Run again to test the incremental path
+        run: dbt build --target ci --select bronze_orders+
+
+  deploy-prod:
+    name: dbt build on Databricks (prod)
+    needs: dbt-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Build
+        run: |
+          if [ -z "$DATABRICKS_HOST" ]; then
+            echo "No Databricks secrets configured - skipping prod build."
+            exit 0
+          fi
+          dbt deps
+          dbt source freshness --target prod
+          dbt build --target prod

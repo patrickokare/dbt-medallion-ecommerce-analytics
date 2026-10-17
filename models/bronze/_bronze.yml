@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: bronze_orders
+    description: Raw orders, incremental on created_at with a 3-day lookback.
+    columns:
+      - name: id
+        data_tests: [unique, not_null]
+  - name: bronze_products
+    description: Raw product catalogue.
+  - name: bronze_reviews
+    description: Raw product reviews.
+  - name: bronze_users
+    description: Raw customers. Contains PII - do not expose outside bronze.

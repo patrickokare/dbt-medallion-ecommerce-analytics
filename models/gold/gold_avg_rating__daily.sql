@@ -1,8 +1,10 @@
-SELECT
-    date(date_format(r.created_at, 'yyyy-MM-dd')) as review_date,
+-- Average review rating per product per day
+select
+    r.review_date,
     r.product_id,
     p.product_name,
-    avg(r.rating) as avg_rating
-FROM {{ ref('bronze_reviews') }} r 
-LEFT JOIN {{ ref('silver_products') }} p ON r.product_id = p.id
+    count(*) as review_count,
+    round(avg(r.rating), 2) as avg_rating
+from {{ ref('silver_reviews') }} r
+left join {{ ref('silver_products') }} p on p.id = r.product_id
 group by all

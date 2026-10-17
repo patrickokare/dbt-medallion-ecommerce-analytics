@@ -1,0 +1,11 @@
+id,name,email,address,city,state,zip,birth_date,source,created_at
+1,Test User 1,user1@example.com,1 Sample St,Calgary,AB,A1A 1B1,1971-02-15,Affiliate,2023-11-23 09:00:00
+2,Test User 2,user2@example.com,2 Sample St,Vancouver,BC,A1A 2B2,1972-03-15,Organic,2023-11-24 09:00:00
+3,Test User 3,user3@example.com,3 Sample St,Montreal,QC,A1A 3B3,1973-04-15,Affiliate,2023-11-25 09:00:00
+4,Test User 4,user4@example.com,4 Sample St,Toronto,ON,A1A 4B4,1974-05-15,Facebook,2023-11-26 09:00:00
+5,Test User 5,user5@example.com,5 Sample St,Calgary,AB,A1A 5B5,1975-06-15,Google,2023-11-27 09:00:00
+6,Test User 6,user6@example.com,6 Sample St,Vancouver,BC,A1A 6B6,1976-07-15,Affiliate,2023-11-28 09:00:00
+7,Test User 7,user7@example.com,7 Sample St,Montreal,QC,A1A 7B7,1977-08-15,Organic,2023-11-29 09:00:00
+8,Test User 8,user8@example.com,8 Sample St,Toronto,ON,A1A 8B8,1978-09-15,Facebook,2023-11-30 09:00:00
+9,Test User 9,user9@example.com,9 Sample St,Calgary,AB,A1A 9B9,1979-01-15,Affiliate,2023-12-01 09:00:00
+10,Test User 10,user10@example.com,10 Sample St,Vancouver,BC,A1A 10B10,1980-02-15,Organic,2023-12-02 09:00:00

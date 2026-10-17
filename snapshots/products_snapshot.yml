@@ -1,0 +1,9 @@
+snapshots:
+  - name: products_snapshot
+    description: SCD Type 2 history of the product catalogue (price, category and vendor changes).
+    relation: source('landing', 'products')
+    config:
+      unique_key: id
+      strategy: check
+      check_cols: [title, category, vendor, price]
+      hard_deletes: invalidate

@@ -2,60 +2,37 @@ version: 2
 
 sources:
   - name: landing
-    database: dbt_project_catalog
+    description: Raw e-commerce extracts loaded by the ingestion job. The catalog comes from the profile.
     schema: landing
+    config:
+      meta:
+        # Only used by the DuckDB "ci" target: read the sample CSVs instead of real tables
+        external_location: "data/sample/{name}.csv"
+      freshness:
+        warn_after: { count: 1, period: day }
+        error_after: { count: 3, period: day }
+      loaded_at_field: created_at
     tables:
-      
       - name: orders
-        tests:
-         - dbt_utils.expression_is_true:
-            expression: "quantity >=0 and unit_price >=0"
         columns:
           - name: id
-            tests:
-              - unique:
-                  config:
-                    severity: warn
-              - not_null:
-                  config:
-                    severity: warn
+            data_tests: [unique, not_null]
           - name: quantity
-            tests:
-              - dbt_utils.expression_is_true:
-                 expression: ">=0"
+            data_tests: [assert_non_negative]
           - name: unit_price
-            tests:
-              - dbt_utils.expression_is_true:
-                 expression: ">=0"
+            data_tests: [assert_non_negative]
 
       - name: products
         columns:
           - name: id
-            tests:
-              - unique:
-                  config:
-                    severity: warn
-              - not_null:
-                  config:
-                    severity: warn
+            data_tests: [unique, not_null]
+
       - name: reviews
         columns:
           - name: id
-            tests:
-              - unique:
-                  config:
-                    severity: warn
-              - not_null:
-                  config:
-                    severity: warn
+            data_tests: [unique, not_null]
+
       - name: users
         columns:
           - name: id
-            tests:
-              - unique:
-                  config:
-                    severity: warn
-              - not_null:
-                  config:
-                    severity: warn
- 
+            data_tests: [unique, not_null]

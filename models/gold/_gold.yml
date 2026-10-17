@@ -1,25 +1,48 @@
 version: 2
 
+models:
+  - name: gold_sales__daily
+    description: Daily revenue, units and orders by product and customer location.
+    columns:
+      - name: order_date
+        data_tests: [not_null]
+      - name: total_revenue
+        data_tests: [assert_non_negative]
+
+  - name: gold_avg_rating__daily
+    description: Average rating per product per day.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [review_date, product_id]
+    columns:
+      - name: avg_rating
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+
 unit_tests:
-  - name: test_gold_avg_rating
+  - name: test_avg_rating_per_product_per_day
     model: gold_avg_rating__daily
     given:
-      - input: ref('bronze_reviews')
+      - input: ref('silver_reviews')
         format: csv
         rows: |
-          id,created_at,product_id,rating
-          1,2018-01-04T00:57:04.845+00:00,1,5
-          2,2018-01-04T00:00:00.140+00:00,1,4
-          3,2020-01-04T00:00:10.040+00:00,2,3
+          id,review_date,product_id,rating
+          1,2018-01-04,1,5
+          2,2018-01-04,1,4
+          3,2020-01-04,2,3
       - input: ref('silver_products')
         format: csv
         rows: |
           id,product_name
-          1,'product1'
-          2,'product2'
+          1,product1
+          2,product2
     expect:
       format: csv
       rows: |
-        review_date,product_id,avg_rating
-        2018-01-04,1,4.5
-        2020-01-04,2,3
+        review_date,product_id,review_count,avg_rating
+        2018-01-04,1,2,4.5
+        2020-01-04,2,1,3

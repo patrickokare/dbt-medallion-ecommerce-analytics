@@ -1,0 +1,27 @@
+# No secrets here - Databricks credentials come from environment variables.
+#   dev / prod : Databricks SQL warehouse
+#   ci         : local DuckDB file with the sample data in data/sample (used by GitHub Actions)
+ecommerce_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: dbt_project_catalog
+      schema: dev
+      host: "{{ env_var('DATABRICKS_HOST', 'not-set') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH', 'not-set') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN', 'not-set') }}"
+      threads: 4
+    prod:
+      type: databricks
+      catalog: dbt_project_catalog
+      schema: prod
+      host: "{{ env_var('DATABRICKS_HOST', 'not-set') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH', 'not-set') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN', 'not-set') }}"
+      threads: 8
+    ci:
+      type: duckdb
+      path: ci.duckdb
+      schema: main
+      threads: 4

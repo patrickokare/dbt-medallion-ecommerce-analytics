@@ -1,18 +1,83 @@
 version: 2
 
+models:
+  - name: silver_orders
+    description: One row per order with the order amount calculated.
+    columns:
+      - name: id
+        data_tests: [unique, not_null]
+      - name: order_date
+        data_tests: [not_null]
+      - name: user_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_users')
+                field: id
+      - name: product_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('silver_products')
+                field: id
+      - name: order_amount
+        data_tests: [assert_non_negative]
+
+  - name: silver_products
+    description: Product catalogue enriched with category descriptions from the seed.
+    columns:
+      - name: id
+        data_tests: [unique, not_null]
+      - name: price
+        data_tests: [assert_non_negative]
+
+  - name: silver_users
+    description: Customers without PII.
+    columns:
+      - name: id
+        data_tests: [unique, not_null]
+
+  - name: silver_reviews
+    description: Reviews with a valid 1-5 rating.
+    columns:
+      - name: id
+        data_tests: [unique, not_null]
+      - name: rating
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+
 unit_tests:
-  - name: test_order_amount_calc
+  - name: test_order_amount_is_quantity_times_price
     model: silver_orders
-    given: 
+    given:
       - input: ref('bronze_orders')
         format: csv
         rows: |
-          id,quantity,unit_price
-          1,10,100.00
-          2,2,5.00
+          id,created_at,quantity,unit_price
+          1,2024-01-01 10:00:00,10,100.00
+          2,2024-01-01 11:00:00,3,3.333
     expect:
       format: csv
       rows: |
         id,order_amount
         1,1000.00
         2,10.00
+
+  - name: test_reviews_outside_1_to_5_are_dropped
+    model: silver_reviews
+    given:
+      - input: ref('bronze_reviews')
+        format: csv
+        rows: |
+          id,created_at,product_id,rating
+          1,2024-01-01 10:00:00,1,5
+          2,2024-01-01 10:00:00,1,0
+          3,2024-01-01 10:00:00,1,6
+    expect:
+      format: csv
+      rows: |
+        id,rating
+        1,5

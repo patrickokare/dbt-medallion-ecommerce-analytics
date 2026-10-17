@@ -1,4 +1,5 @@
-SELECT
+-- Daily sales by product and customer location
+select
     o.order_date,
     p.product_name,
     p.category,
@@ -6,12 +7,10 @@ SELECT
     u.city,
     u.state,
     u.sales_channel,
+    count(distinct o.id) as order_count,
+    sum(o.quantity) as units_sold,
     sum(o.order_amount) as total_revenue
-FROM
-{{ ref('silver_orders') }} o 
-LEFT JOIN {{ ref('silver_products') }} p ON o.product_id = p.id
-LEFT JOIN {{ ref('silver_users') }} u ON o.user_id = u.id
+from {{ ref('silver_orders') }} o
+left join {{ ref('silver_products') }} p on p.id = o.product_id
+left join {{ ref('silver_users') }} u on u.id = o.user_id
 group by all
-
-
-
